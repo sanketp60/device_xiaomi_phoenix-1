@@ -5,7 +5,7 @@
 #
 
 BOARD_VENDOR := xiaomi
-
+BUILD_BROKEN_DUP_RULES := true
 DEVICE_PATH := device/xiaomi/phoenix
 
 # Architecture
@@ -27,6 +27,9 @@ BOARD_ANT_WIRELESS_DEVICE := "qualcomm-hidl"
 # Assert
 TARGET_OTA_ASSERT_DEVICE := phoenix,phoenixin
 
+# Audio
+TARGET_PROVIDES_AUDIO_EXTNS := true
+
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := sm6150
 TARGET_NO_BOOTLOADER := true
@@ -44,9 +47,6 @@ BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 1
 # Init
 TARGET_INIT_VENDOR_LIB := //$(DEVICE_PATH):libinit_phoenix
 TARGET_RECOVERY_DEVICE_MODULES := libinit_phoenix
-
-# HIDL
-DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/manifest.xml
 
 # Kernel
 BOARD_KERNEL_BASE := 0x00000000
