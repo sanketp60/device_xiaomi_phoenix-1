@@ -254,6 +254,10 @@ PRODUCT_PACKAGES += \
     ims-ext-common \
     ims_ext_common.xml
 
+# Init
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/android.hardware.biometrics.fingerprint@2.1-service.xiaomi_phoenix.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.biometrics.fingerprint@2.1-service.xiaomi_phoenix.rc
+
 # Insmod files
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/init.insmod.cfg:$(TARGET_COPY_OUT_VENDOR)/etc/init.insmod.cfg
