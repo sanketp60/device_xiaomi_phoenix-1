@@ -7,6 +7,12 @@
 
 set -e
 
+# Required
+DEVICE=phoenix
+VENDOR=xiaomi
+
+DEVICE_BRINGUP_YEAR=2020
+
 # Load extract_utils and do some sanity checks
 MY_DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "${MY_DIR}" ]]; then MY_DIR="${PWD}"; fi
@@ -23,15 +29,11 @@ source "${HELPER}"
 # Default to sanitizing the vendor folder before extraction
 CLEAN_VENDOR=true
 
-ONLY_COMMON=
 SECTION=
 KANG=
 
 while [ "${#}" -gt 0 ]; do
     case "${1}" in
-        -o | --only-common )
-                ONLY_COMMON=false
-                ;;
         -n | --no-cleanup )
                 CLEAN_VENDOR=false
                 ;;
@@ -71,22 +73,15 @@ function blob_fixup() {
     esac
 }
 
-# Initialize the helper for common device
-setup_vendor "${DEVICE_COMMON}" "${VENDOR}" "${LINEAGE_ROOT}" true "${CLEAN_VENDOR}"
+# Reinitialize the helper for device
+source "${MY_DIR}/extract-files.sh"
+setup_vendor "${DEVICE}" "${VENDOR}" "${LINEAGE_ROOT}" false "${CLEAN_VENDOR}"
 
-extract "${MY_DIR}/proprietary-files.txt" "${SRC}" \
+extract "${MY_DIR}/../${DEVICE}/proprietary-files.txt" "${SRC}" \
         "${KANG}" --section "${SECTION}"
-
-if [ -z "${ONLY_COMMON}" ] && [ -s "${MY_DIR}/../${DEVICE}/proprietary-files.txt" ]; then
-    # Reinitialize the helper for device
-    source "${MY_DIR}/../${DEVICE}/extract-files.sh"
-    setup_vendor "${DEVICE}" "${VENDOR}" "${LINEAGE_ROOT}" false "${CLEAN_VENDOR}"
-
-    extract "${MY_DIR}/../${DEVICE}/proprietary-files.txt" "${SRC}" \
-            "${KANG}" --section "${SECTION}"
 fi
 
-COMMON_BLOB_ROOT="${LINEAGE_ROOT}/vendor/${VENDOR}/${DEVICE_COMMON}/proprietary"
+DEVICE_BLOB_ROOT="${LINEAGE_ROOT}/vendor/${VENDOR}/${DEVICE}/proprietary"
 
 #
 # Fix product path
@@ -94,7 +89,7 @@ COMMON_BLOB_ROOT="${LINEAGE_ROOT}/vendor/${VENDOR}/${DEVICE_COMMON}/proprietary"
 function fix_product_path () {
     sed -i \
         's/\/system\/framework\//\/system\/product\/framework\//g' \
-        "$COMMON_BLOB_ROOT"/"$1"
+        "$DEVICE_BLOB_ROOT"/"$1"
 }
 
 fix_product_path product/etc/permissions/vendor.qti.hardware.factory.xml
@@ -106,7 +101,7 @@ fix_product_path product/etc/permissions/vendor-qti-hardware-sensorscalibrate.xm
 function fix_xml_version () {
     sed -i \
         's/xml version="2.0"/xml version="1.0"/' \
-        "$COMMON_BLOB_ROOT"/"$1"
+        "$DEVICE_BLOB_ROOT"/"$1"
 }
 
 fix_xml_version product/etc/permissions/vendor.qti.hardware.data.connection-V1.0-java.xml
