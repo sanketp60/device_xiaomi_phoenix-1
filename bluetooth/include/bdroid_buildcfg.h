@@ -37,12 +37,8 @@ typedef struct {
 } device_t;
 
 static const device_t devices[] = {
-    {"davinci", "CN", "Redmi K20"},
-    {"davinci", "GLOBAL", "Mi 9T"},
-    {"davinciin", "IN", "Redmi K20"},
     {"phoenix", "ALL", "Redmi K30"},
     {"phoenixin", "IN", "POCO X2"},
-    {"violet", "ALL", "Redmi Note 7 Pro"},
 };
 
 static inline const char *BtmGetDefaultName()
